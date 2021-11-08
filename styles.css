@@ -1,1 +1,96 @@
+body {
+ text-align: center;
+}
+
+button {
+    font-size: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+footer {
+    background-color: thistle;
+    font-size: 20px;
+    margin: auto
+ 
+}
+
+h1 {
+    background-color: thistle;
+}
+
+
+#container {
+    display: flex;
+    justify-content: center;
+    background-image: url("images/whiteback.jpg");
+    
+
+}
+
+.calculatorFrame {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid black;
+    margin: 20px;
+    background-color: silver;
+    border-radius: 25px;
+    height: 560px;
+   
+
+}
+
+.display {
+    width: 400px;
+    height: 85px;
+    border: 2px solid black;
+    text-align: right;
+    font-size: 35px; 
+    position: relative;  
+    word-wrap: break-word;
+    align-self: center;
+    margin: 25px;
+    background-color: rgb(218, 212, 212);
+ 
+
+}
+
+.calculations {
+    display: block;
+    position: absolute;                 
+    bottom:0;                         
+    right:0; 
+    margin: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 22ch;
+
+}
+
+#btn {
+    display: flex;
+    flex: 1;
+    height: 50px;
+    margin: 15px;
+    background-image: linear-gradient(to right,#d5d0e5, #bd9096);
+    border-radius: 15px;
+    
+  
+
+}
+
+.row {
+   display: flex;
+   flex-direction: row;
+   
+    
+}
+
+#btn.operators {
+    background-image: linear-gradient(to right,#c8c85e, #d8d8ac);
+}
+
+#btn.numbers {
+    background-image: linear-gradient(to right,#d7e1ec, #ffffff);
+}
 
