@@ -1,7 +1,10 @@
 
+
+
 const container = document.querySelector('#container');
 const calculatorFrame = document.querySelector('.calculatorFrame');
-const calculatorDisplay = document.querySelector('.calculations');
+
+
 
 
 // creates buttons inside calculator frame
@@ -18,91 +21,28 @@ function createButtons(rows, buttons) {
     }
 }
 
-
-
-
 createButtons(5,4);
-// list of mathematical functions - unless specified, each one limits the number of decimal places to 2
-
-// addition function 
-function add(a, b) {
-    sum = a + b;
-    if (sum % 1 != 0) {
-      return sum.toFixed(2);
-    }
-    else return sum
-}
-
-// subtraction function 
-function subtract(a, b) {
-    sum = a - b;
-    if (sum % 1 != 0) {
-      return sum.toFixed(2);
-    }
-    else return sum
-}
-
-// multiplication function
-function multiply(a, b) {
-    sum = a * b;
-    if (sum % 1 != 0) {
-      return sum.toFixed(2);
-    }
-    else return sum
-}
-
-// division function 
-function divide(a, b) {
-    sum = a / b;
-    if (sum % 1 != 0) {
-      return sum.toFixed(2);
-    }
-    else return sum
-}
-
-
-// square root function 
-function squareRoot(display) {
-    return Math.sqrt(display);
-}
-
-// convert number to percentage - 3 decimal places
-function percentage(display) {
-    let num = display / 100;
-    return num.toFixed(3);
-}
-
-// converts integer from positive to negative , vice versa
-function plusMinus (display) {
-    if (display > 0) {
-        return -Math.abs(display);
-    }
-    else if (display < 0) {
-        return Math.abs(display);
-    }
-}
 
 // combined operators function
 function operators(operator, a, b) {
     while (true) {
     if (operator == '+') {
-        return add(a, b);
+        return a + b
     }
     else if (operator == '-') {
-        return subtract(a, b);
+        return a - b
     }
     else if (operator == '*') {
-        return multiply(a, b);
+        return a * b
     }
     else if (operator == '/') {
-        return divide(a, b);
+        return a / b
     }
-    
-    
+     
     }
 }
 
-// function to delete last value inputted 
+// function to delete last value input
 function deleteCharacter(display) {
   let newDisplay = Array.from(display);
   display = Number(newDisplay.slice(0, display.length-1).join(''));
@@ -127,17 +67,24 @@ function assignText(array){
 // calls function to assign symbols to each button
 assignText(buttonTextContent);
 
+/* ALL OF THIS IN COMMENTS WAS EXPERIMENTATION - DID NOT GO AS PLANNED
 // create an empty object to store numbers in
   let numbers = {};
 
+
 // the operator is put in strings so it will work for our functions 
   let theOperator = ""
+  let previousValue; 
+  let currentValue;
   
 // event listeners for each button
 
 // clear 
   allButtons[0].addEventListener('click', () => {
     calculatorDisplay.textContent = '';
+    numbers.num1 = '';
+    numbers.num2 = '';
+    numbers.num3 = '';
     })
   
 // square root
@@ -208,7 +155,7 @@ assignText(buttonTextContent);
     calculatorDisplay.textContent = '';
     theOperator = '-';
     console.log(numbers);
-    }) 
+}) 
   
 // 1   
   allButtons[12].addEventListener('click', () => {
@@ -234,7 +181,7 @@ assignText(buttonTextContent);
     calculatorDisplay.textContent = '';
     theOperator = '+';
     console.log(numbers);
-    })
+  })
 
 // 0
   allButtons[16].addEventListener('click', () => {
@@ -266,19 +213,130 @@ assignText(buttonTextContent);
         
     else {
     calculatorDisplay.textContent = operators(theOperator, numbers.num1, numbers.num2);
+    numbers.num2 = undefined
+    console.log(numbers)
   }});
 
+*/
 
-// event listener for delete key down 
+// CORRECT SOLUTIONS BELOW
 
-
-// add specific classes to button types
+// add specific classes to different button types
+// I know I could have added them in quicker using HTML - I wanted the practice 
 let buttonOperators = [allButtons[3], allButtons[7], allButtons[11], allButtons[15], allButtons[19]];
 for (let i = 0; i < buttonOperators.length; i++) {
     buttonOperators[i].classList.add('operators')
 }
 
-let buttonNumbers = [allButtons[4], allButtons[5], allButtons[6], allButtons[8], allButtons[9], allButtons[10], allButtons[12], allButtons[13], allButtons[14], allButtons[16], allButtons[17]];
+let buttonNumbers = [allButtons[4], allButtons[5], allButtons[6], allButtons[8], allButtons[9], allButtons[10], allButtons[12], allButtons[13], allButtons[14], allButtons[16]];
 for (let i = 0; i < buttonNumbers.length; i++) {
     buttonNumbers[i].classList.add('numbers');
+}
+allButtons[17].classList.add('decimals');
+allButtons[0].classList.add('clearAll');
+
+
+const calculator = {
+  displayValue: '0',
+  firstOperand: null,
+  waitingForSecondOperand: false,
+  operator: null,
+};
+
+function updateDisplay() {
+  const display = document.querySelector(".calculations");
+  display.textContent = calculator.displayValue;
+}
+
+
+const keys = document.querySelector(".calculatorFrame");
+keys.addEventListener('click', (e) => {
+  const {target} = e;
+  if (!target.matches('button')) {
+    return;
+  }
+    else if (target.classList.contains('operators')) {
+      handleOperator(target.value);
+      updateDisplay();
+      
+    }
+    else if (target.classList.contains('clearAll')) {
+      resetCalculator();
+      updateDisplay();
+      
+    }
+    else if (target.classList.contains('decimals')) {
+      decimals(target.value)
+      updateDisplay();
+      
+    }
+    else if (target.classList.contains('numbers')) {
+      inputDigit(target.value);
+      updateDisplay();  
+     
+    }
+    else "";
+})
+
+function inputDigit(digit) {
+  const { displayValue, waitingForSecondOperand } = calculator;
+
+  if (waitingForSecondOperand === true) {
+    calculator.displayValue = digit;
+    calculator.waitingForSecondOperand = false;
+  } else {
+    calculator.displayValue = displayValue === '0' ? digit : displayValue + digit;
+  }
+
+  console.log(calculator);
+}
+
+function decimals(dot){
+  if (!calculator.displayValue.includes(dot)) {
+    calculator.displayValue += dot;
+  }
+
+}
+
+function resetCalculator() {
+  calculator.displayValue = '0';
+  calculator.firstOperand = null;
+  calculator.waitingForSecondOperand = false;
+  calculator.operator = null;
+  console.log(calculator);
+}
+
+function handleOperator(nextOperator) {
+  const { firstOperand, displayValue, operator } = calculator
+  const inputValue = parseFloat(displayValue);
+
+  if (firstOperand == null && !isNaN(inputValue)) {
+    calculator.firstOperand = inputValue;
+  } else if (operator) {
+    const result = calculate(firstOperand, inputValue, operator);
+
+    calculator.displayValue = String(result);
+    calculator.firstOperand = result;
+  }
+
+  calculator.waitingForSecondOperand = true;
+  calculator.operator = nextOperator;
+  console.log(calculator);
+}
+
+
+
+function calculate(firstOperand, secondOperand, operator) {
+  if (operator === '+') {
+    return firstOperand + secondOperand;
+  } else if (operator === '-') {
+    return firstOperand - secondOperand;
+  } else if (operator === 'x') {
+    return firstOperand * secondOperand;
+  } else if (operator === '÷') {
+    return firstOperand / secondOperand;
+  }
+    else if (operator=== '=') {
+    return secondOperand;
+    }
 }
