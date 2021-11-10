@@ -56,7 +56,7 @@ const buttonTextContent = ["AC", "√x", '%', '÷', '7', '8', '9', 'x', '4', '5'
 // selects all buttons
 const allButtons = document.querySelectorAll('#btn');
 
-// function to assign text content from an array 
+// function to assign text and value content from an array 
 function assignText(array){
     for (let i = 0; i < array.length; i++) {
         allButtons[i].textContent = array[i];
@@ -232,10 +232,14 @@ let buttonNumbers = [allButtons[4], allButtons[5], allButtons[6], allButtons[8],
 for (let i = 0; i < buttonNumbers.length; i++) {
     buttonNumbers[i].classList.add('numbers');
 }
+
+// adds special classes to unique operators 
 allButtons[17].classList.add('decimals');
+allButtons[1].classList.add('squareRoot');
 allButtons[0].classList.add('clearAll');
+allButtons[18].classList.add('plusMinus');
 
-
+// object to hold values needed to compute 
 const calculator = {
   displayValue: '0',
   firstOperand: null,
@@ -243,12 +247,15 @@ const calculator = {
   operator: null,
 };
 
+
+const display = document.querySelector(".calculations");
+// updates display after each operation 
 function updateDisplay() {
   const display = document.querySelector(".calculations");
   display.textContent = calculator.displayValue;
 }
 
-
+// add event listeners to all buttons within calculator frame 
 const keys = document.querySelector(".calculatorFrame");
 keys.addEventListener('click', (e) => {
   const {target} = e;
@@ -273,8 +280,14 @@ keys.addEventListener('click', (e) => {
     else if (target.classList.contains('numbers')) {
       inputDigit(target.value);
       updateDisplay();  
-     
     }
+    else if (target.classList.contains('plusMinus')) {
+      if (calculator.displayValue !== 0) {
+        calculator.displayValue *= 1;
+      }
+    }
+
+    
     else "";
 })
 
@@ -298,6 +311,7 @@ function decimals(dot){
 
 }
 
+// resets the calculator when AC is pushed 
 function resetCalculator() {
   calculator.displayValue = '0';
   calculator.firstOperand = null;
@@ -310,7 +324,7 @@ function handleOperator(nextOperator) {
   const { firstOperand, displayValue, operator } = calculator
   const inputValue = parseFloat(displayValue);
 
-  if (firstOperand == null && !isNaN(inputValue)) {
+  if (firstOperand == null && !isNaN(inputValue)){
     calculator.firstOperand = inputValue;
   } else if (operator) {
     const result = calculate(firstOperand, inputValue, operator);
@@ -325,7 +339,7 @@ function handleOperator(nextOperator) {
 }
 
 
-
+// all math operations 
 function calculate(firstOperand, secondOperand, operator) {
   if (operator === '+') {
     return firstOperand + secondOperand;
@@ -340,3 +354,53 @@ function calculate(firstOperand, secondOperand, operator) {
     return secondOperand;
     }
 }
+
+
+
+// square root function
+function squareRoot(display) {
+  return Math.sqrt(display);
+}
+
+// percentage function
+function percentage(display) {
+  let num = display / 100;
+  return num.toFixed(3);
+}
+
+// plusMinus function
+function plusMinus (display) {
+  if (display > 0) {
+      return -Math.abs(display);
+  }
+  else if (display < 0) {
+      return Math.abs(display);
+  }
+}
+
+
+// added event listners for special operators 
+
+// converts numbers from positive to negative or negative to positive 
+allButtons[18].addEventListener('click', () => {
+  display.textContent = plusMinus(display.textContent);
+  calculator.firstOperand = Number(display.textContent);
+  calculator.displayValue = display.textContent
+  console.log(calculator);
+});
+
+// takes square root of number 
+allButtons[1].addEventListener('click', () => {
+  display.textContent = squareRoot(display.textContent);
+  calculator.firstOperand = Number(display.textContent);
+  calculator.displayValue = display.textContent
+  console.log(calculator);
+});
+
+// converts number into percentage 
+allButtons[2].addEventListener('click', () => {
+  display.textContent = percentage(display.textContent);
+  calculator.firstOperand = Number(display.textContent);
+  calculator.displayValue = display.textContent
+  console.log(calculator);
+});
